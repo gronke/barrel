@@ -42,7 +42,7 @@ fn boolean() {
 
 #[test]
 fn binary() {
-    let sql = MsSql::add_column(true, None, "Binary", &types::binary());
+    let sql = MsSql::add_column(true, None, "Binary", &types::binary(0));
     assert_eq!(String::from("ADD [Binary] VARBINARY(MAX) NOT NULL"), sql);
 }
 

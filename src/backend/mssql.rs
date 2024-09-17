@@ -245,17 +245,32 @@ impl MsSql {
             Time => format!("TIME"),
             DateTime => format!("DATETIME2"),
             Json => format!("JSON"),
-            Binary => format!("VARBINARY(MAX)"),
-            Foreign(s, t, refs) => format!(
-                "INT REFERENCES {}[{}]({})",
-                quoted_prefix!(s.or(schema.map(|s| s.into()))),
-                t,
-                refs.0
-                    .iter()
-                    .map(|r| format!("[{}]", r))
-                    .collect::<Vec<_>>()
-                    .join(",")
-            ),
+            Binary(l) => match l {
+                0 => format!("VARBINARY(MAX)"), // For "0" remove the limit
+                _ => format!("VARBINARY({})", l),
+            },
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "INT REFERENCES {}[{}]({}){}{}",
+                    quoted_prefix!(s.or(schema.map(|s| s.into()))),
+                    t,
+                    refs.0
+                        .iter()
+                        .map(|r| format!("[{}]", r))
+                        .collect::<Vec<_>>()
+                        .join(","),
+                    u,
+                    d
+                )
+            },
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MsSql::print_type(*meh, schema)),
             Index(_) => unreachable!("Indices are handled via custom builder"),

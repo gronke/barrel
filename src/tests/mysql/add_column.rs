@@ -45,8 +45,14 @@ fn boolean() {
 
 #[test]
 fn binary() {
-    let sql = MySql::add_column(true, None, "Binary", &types::binary());
-    assert_eq!(String::from("ADD COLUMN `Binary` BYTEA NOT NULL"), sql);
+    let sql = MySql::add_column(true, None, "Binary", &types::binary(0));
+    assert_eq!(String::from("ADD COLUMN `Binary` BINARY NOT NULL"), sql);
+}
+
+#[test]
+fn binary_length() {
+    let sql = MySql::add_column(true, None, "Binary", &types::binary(64));
+    assert_eq!(String::from("ADD COLUMN `Binary` BINARY(64) NOT NULL"), sql);
 }
 
 #[test]
