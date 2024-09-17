@@ -48,8 +48,14 @@ fn boolean() {
 
 #[test]
 fn binary() {
-    let sql = Pg::add_column(true, None, "Binary", &types::binary());
+    let sql = Pg::add_column(true, None, "Binary", &types::binary(0));
     assert_eq!(String::from("ADD COLUMN \"Binary\" BYTEA NOT NULL"), sql);
+}
+
+#[test]
+fn binary_length() {
+    let sql = Pg::add_column(true, None, "Binary", &types::binary(100));
+    assert_eq!(String::from("ADD COLUMN \"Binary\" BYTEA CHECK (octet_length(new_column_name) = 100) NOT NULL"), sql);
 }
 
 #[test]
@@ -153,7 +159,7 @@ fn array_binary() {
         true,
         None,
         "Array of Binary",
-        &types::array(&types::binary()),
+        &types::array(&types::binary(0)),
     );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Binary\" BYTEA[] NOT NULL"),

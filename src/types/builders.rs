@@ -77,8 +77,8 @@ pub fn json() -> Type {
 }
 
 /// Embed binary data
-pub fn binary<'inner>() -> Type {
-    Type::new(BaseType::Binary)
+pub fn binary(len: usize) -> Type {
+    Type::new(BaseType::Binary(len))
 }
 
 /// Create a column that points to some foreign table

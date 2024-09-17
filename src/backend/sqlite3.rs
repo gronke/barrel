@@ -91,7 +91,7 @@ impl SqlGenerator for Sqlite {
             Date => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             Time => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             DateTime => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
-            Binary => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
+            Binary(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             Foreign(_, _, _, _, _) => format!("{}\"{}\" INTEGER{} REFERENCES {}", Sqlite::prefix(ex), name, nullable_definition, Sqlite::print_type(bt)),
             Custom(_) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(bt)),
             Array(it) => format!("{}\"{}\" {}", Sqlite::prefix(ex), name, Sqlite::print_type(Array(Box::new(*it)))),
@@ -239,7 +239,10 @@ impl Sqlite {
             Time => format!("TIME"),
             DateTime => format!("DATETIME"),
             Json => panic!("Json is not supported by Sqlite3"),
-            Binary => format!("BINARY"),
+            Binary(l) => match l {
+                0 => format!("BINARY"), // For "0" remove the limit
+                _ => format!("BINARY({})", l),
+            },
             Foreign(_, t, refs, on_update, on_delete) => {
                 let d = match on_delete {
                     ReferentialAction::Unset => String::from(""),

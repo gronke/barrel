@@ -79,7 +79,7 @@ impl SqlGenerator for MySql {
                 Date => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Time => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 DateTime => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
-                Binary => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Binary(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Foreign(_, _, _, _, _) => format!("{}{} INTEGER{}, FOREIGN KEY ({}) {}", Self::prefix(ex), name, nullable_definition, name, Self::print_type(bt, schema)),
                 Custom(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(Array(Box::new(*it)), schema)),
@@ -237,7 +237,10 @@ impl MySql {
             Time => format!("TIME"),
             DateTime => format!("DATETIME"),
             Json => format!("JSON"),
-            Binary => format!("BYTEA"),
+            Binary(l) => match l {
+                0 => format!("BINARY"), // For "0" remove the limit
+                _ => format!("BINARY({})", l),
+            },
             Foreign(s, t, refs, on_update, on_delete) => {
                 let d = match on_delete {
                     ReferentialAction::Unset => String::from(""),
