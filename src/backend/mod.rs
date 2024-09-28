@@ -25,7 +25,7 @@ mod mssql;
 pub use self::mssql::MsSql;
 
 #[allow(unused_imports)]
-use crate::{types::Type, Migration};
+use crate::{types::Type, Migration, table::Trigger};
 
 /// An enum describing all supported Sql flavours
 #[derive(Copy, Clone, Debug)]
@@ -124,4 +124,7 @@ pub trait SqlGenerator {
     ) -> String;
 
     fn add_primary_key(columns: &[String]) -> String;
+
+    //fn trigger(table_name: &str, action: TriggerAction, time: TriggerActionTime) -> String;
+    fn create_or_replace_trigger(trigger: &Trigger) -> String;
 }

@@ -7,6 +7,7 @@ use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
     types::{BaseType, ReferentialAction, Type, WrappedDefault},
+    table::Trigger
 };
 
 /// A simple macro that will generate a schema prefix if it exists
@@ -205,6 +206,16 @@ impl SqlGenerator for MySql {
     fn add_primary_key(columns: &[String]) -> String {
         let columns: Vec<_> = columns.into_iter().map(|c| format!("`{}`", c)).collect();
         format!("PRIMARY KEY ({})", columns.join(","))
+    }
+
+    fn create_or_replace_trigger(trigger: &Trigger) -> String {
+        format!(
+            "CREATE OR REPLACE TRIGGER `{}` {} {} ON `{}`",
+            trigger.trigger_name(),
+            trigger.time,
+            trigger.action,
+            trigger.table_name
+        )
     }
 }
 

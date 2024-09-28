@@ -48,6 +48,7 @@ impl Debug for PrimaryKeyChange {
 pub struct Table {
     pub meta: TableMeta,
     columns: Vec<TableChange>,
+    triggers: Vec<Trigger>,
     indices: Vec<IndexChange>,
     constraints: Vec<ConstraintChange>,
     foreign_keys: Vec<ForeignKeyChange>,
@@ -63,11 +64,57 @@ pub struct SqlChanges {
     pub(crate) primary_key: Option<String>,
 }
 
+#[derive(Debug, Clone)]
+pub enum TriggerAction {
+    INSERT,
+    UPDATE,
+    DELETE
+}
+
+impl std::fmt::Display for TriggerAction{
+    fn fmt(&self,f: &mut std::fmt::Formatter) -> std::fmt::Result{
+        match *self {
+            TriggerAction::INSERT => write!(f, "INSERT"),
+            TriggerAction::UPDATE => write!(f, "UPDATE"),
+            TriggerAction::DELETE => write!(f, "DELETE")
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub enum TriggerActionTime {
+    BEFORE,
+    AFTER
+}
+
+impl std::fmt::Display for TriggerActionTime {
+    fn fmt(&self,f: &mut std::fmt::Formatter) -> std::fmt::Result{
+        match *self {
+            TriggerActionTime::BEFORE => write!(f, "BEFORE"),
+            TriggerActionTime::AFTER => write!(f, "AFTER")
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Trigger {
+    pub table_name: String,
+    pub action: TriggerAction,
+    pub time: TriggerActionTime
+}
+
+impl Trigger {
+    pub fn trigger_name(&self) -> String {
+        format!("t_{}_{}_{}", self.table_name, self.time, self.action).to_lowercase()
+    }
+}
+
 impl Table {
     pub fn new<S: Into<String>>(name: S) -> Self {
         Self {
             meta: TableMeta::new(name.into()),
             columns: vec![],
+            triggers: vec![],
             indices: vec![],
             constraints: vec![],
             foreign_keys: vec![],
@@ -93,6 +140,16 @@ impl Table {
             &mut TableChange::AddColumn(_, ref mut c) => c,
             _ => unreachable!(),
         }
+    }
+
+    pub fn trigger_on(&mut self, action: TriggerAction, time: TriggerActionTime) {
+        let trigger = Trigger {
+            table_name: self.meta.name.clone(),
+            action,
+            time
+        };
+        self.triggers
+            .push(trigger);
     }
 
     pub fn drop_column<S: Into<String>>(&mut self, name: S) {
