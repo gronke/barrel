@@ -6,7 +6,7 @@
 use super::SqlGenerator;
 use crate::{
     functions::AutogenFunction,
-    types::{BaseType, Type, WrappedDefault},
+    types::{BaseType, ReferentialAction, Type, WrappedDefault},
 };
 
 /// A simple macro that will generate a quoted schema prefix if it exists
@@ -246,16 +246,28 @@ impl MsSql {
             DateTime => format!("DATETIME2"),
             Json => format!("JSON"),
             Binary => format!("VARBINARY(MAX)"),
-            Foreign(s, t, refs) => format!(
-                "INT REFERENCES {}[{}]({})",
-                quoted_prefix!(s.or(schema.map(|s| s.into()))),
-                t,
-                refs.0
-                    .iter()
-                    .map(|r| format!("[{}]", r))
-                    .collect::<Vec<_>>()
-                    .join(",")
-            ),
+            Foreign(s, t, refs, on_update, on_delete) => {
+                let d = match on_delete {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_delete.on_delete()),
+                };
+                let u = match on_update {
+                    ReferentialAction::Unset => String::from(""),
+                    _ => format!(" {}", on_update.on_update()),
+                };
+                format!(
+                    "INT REFERENCES {}[{}]({}){}{}",
+                    quoted_prefix!(s.or(schema.map(|s| s.into()))),
+                    t,
+                    refs.0
+                        .iter()
+                        .map(|r| format!("[{}]", r))
+                        .collect::<Vec<_>>()
+                        .join(","),
+                    u,
+                    d
+                )
+            },
             Custom(t) => format!("{}", t),
             Array(meh) => format!("{}[]", MsSql::print_type(*meh, schema)),
             Index(_) => unreachable!("Indices are handled via custom builder"),

@@ -9,7 +9,7 @@ fn in_schema() {
         false,
         Some("schema"),
         "author",
-        &types::foreign("users", "id"),
+        &types::foreign("users", "id", types::ReferentialAction::Unset, types::ReferentialAction::Unset),
     );
 
     assert_eq!(
@@ -24,7 +24,7 @@ fn ext_schema() {
         false,
         Some("schema"),
         "author",
-        &types::foreign_schema("other_schema", "users", "id"),
+        &types::foreign_schema("other_schema", "users", "id", types::ReferentialAction::Unset, types::ReferentialAction::Unset),
     );
 
     assert_eq!(
