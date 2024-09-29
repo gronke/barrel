@@ -53,7 +53,7 @@ pub enum BaseType {
     /// Date and time
     DateTime,
     /// <inconceivable jibberish>
-    Binary,
+    Binary(usize),
     /// Foreign key to other table
     Foreign(
         Option<String>,

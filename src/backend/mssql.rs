@@ -245,7 +245,10 @@ impl MsSql {
             Time => format!("TIME"),
             DateTime => format!("DATETIME2"),
             Json => format!("JSON"),
-            Binary => format!("VARBINARY(MAX)"),
+            Binary(l) => match l {
+                0 => format!("VARBINARY(MAX)"), // For "0" remove the limit
+                _ => format!("VARBINARY({})", l),
+            },
             Foreign(s, t, refs, on_update, on_delete) => {
                 let d = match on_delete {
                     ReferentialAction::Unset => String::from(""),
