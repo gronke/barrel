@@ -33,7 +33,7 @@ pub enum BaseType {
     /// Primary key (utility for incrementing integer – postgres supports this, we just mirror it)
     Primary,
     /// Simple integer
-    Integer,
+    Integer(usize),
     /// An integer that as a default value of the next biggest number
     Serial,
     /// Floating point number
@@ -103,7 +103,7 @@ pub enum BaseType {
 /// use barrel::types::*;
 ///
 /// // Make your own Primary key :)
-/// let col = integer().increments(true).unique(true);
+/// let col = integer(0).increments(true).unique(true);
 /// ```
 #[derive(Debug, Clone, PartialEq)]
 pub struct Type {

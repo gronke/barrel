@@ -12,7 +12,7 @@ fn main() {
     m.create_table("users", |t: &mut Table| {
         t.add_column("name", types::varchar(255)); // Default name is "Anonymous"
         t.add_column("description", types::text().nullable(true)); // Can be null
-        t.add_column("age", types::integer());
+        t.add_column("age", types::integer(0));
         t.add_column("posts", types::foreign("posts", vec!["id", "url"], types::ReferentialAction::NoAction, types::ReferentialAction::NoAction));
         t.add_column("owns_plushy_sharks", types::boolean());
     });

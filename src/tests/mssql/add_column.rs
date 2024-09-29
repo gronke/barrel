@@ -18,7 +18,7 @@ fn varchar() {
 
 #[test]
 fn integer() {
-    let sql = MsSql::add_column(true, None, "Integer", &types::integer());
+    let sql = MsSql::add_column(true, None, "Integer", &types::integer(0));
     assert_eq!(String::from("ADD [Integer] INT NOT NULL"), sql);
 }
 

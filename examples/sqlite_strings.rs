@@ -7,7 +7,7 @@ fn main() {
         t.add_column("id", types::text().primary(true));
         t.add_column("name", types::varchar(255).default("Anonymous")); // Default name is "Anonymous"
         t.add_column("description", types::text().nullable(true)); // Can be null
-        t.add_column("age", types::integer());
+        t.add_column("age", types::integer(0));
         t.add_column(
             "posts",
             types::foreign(

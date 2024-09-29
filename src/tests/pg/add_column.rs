@@ -21,7 +21,7 @@ fn varchar() {
 
 #[test]
 fn integer() {
-    let sql = Pg::add_column(true, None, "Integer", &types::integer());
+    let sql = Pg::add_column(true, None, "Integer", &types::integer(0));
     assert_eq!(String::from("ADD COLUMN \"Integer\" INTEGER NOT NULL"), sql);
 }
 
@@ -108,7 +108,7 @@ fn array_integer() {
         true,
         None,
         "Array of Integer",
-        &types::array(&types::integer()),
+        &types::array(&types::integer(0)),
     );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Integer\" INTEGER[] NOT NULL"),
@@ -182,7 +182,7 @@ fn array_array_integer() {
         true,
         None,
         "Array of Array of Integer",
-        &types::array(&types::array(&types::integer())),
+        &types::array(&types::array(&types::integer(0))),
     );
     assert_eq!(
         String::from("ADD COLUMN \"Array of Array of Integer\" INTEGER[][] NOT NULL"),

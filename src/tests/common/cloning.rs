@@ -27,7 +27,7 @@ impl DataTypes {
         match *self {
             DataTypes::Bool => types::text(),
             DataTypes::F64 => types::double(),
-            DataTypes::I64 => types::integer(),
+            DataTypes::I64 => types::integer(11),
             DataTypes::String => types::text(),
         }
     }

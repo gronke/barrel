@@ -69,7 +69,7 @@ impl SqlGenerator for MySql {
                 Varchar(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Char(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Primary => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
-                Integer => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                Integer(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Serial => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Float => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Double => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
@@ -227,7 +227,10 @@ impl MySql {
             Char(l) => format!("CHAR({})", l),
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
             Primary => format!("INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY"),
-            Integer => format!("INTEGER"),
+            Integer(l) => match l {
+                0 => format!("INTEGER"),
+                _ => format!("INTEGER({})", l),
+            },
             Serial => format!("INTEGER AUTO_INCREMENT"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),

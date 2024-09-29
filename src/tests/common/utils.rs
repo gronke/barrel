@@ -10,7 +10,7 @@ fn cloning_types() {
 fn equals_types() {
     let t1 = types::text();
     let t2 = t1.clone();
-    let t3 = types::integer();
+    let t3 = types::integer(11);
     assert!(t1 == t2);
     assert!(t1 != t3);
 }
