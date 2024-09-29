@@ -32,8 +32,8 @@ pub fn uuid() -> Type {
 }
 
 /// Create a basic integer type
-pub fn integer() -> Type {
-    Type::new(BaseType::Integer)
+pub fn integer(len: usize) -> Type {
+    Type::new(BaseType::Integer(len))
 }
 
 /// Create an auto-incrementing integer type

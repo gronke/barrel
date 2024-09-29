@@ -26,7 +26,7 @@ fn main() {
     
     m.create_table("users", |t| {
         t.add_column("name", types::varchar(255));
-        t.add_column("age", types::integer());
+        t.add_column("age", types::integer(0));
         t.add_column("owns_plushy_sharks", types::boolean());
     });
     

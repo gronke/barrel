@@ -30,7 +30,7 @@ fn basic_fields() {
     m.create_table("users", |t: &mut Table| {
         t.add_column("id", types::primary());
         t.add_column("name", types::varchar(255));
-        t.add_column("age", types::integer());
+        t.add_column("age", types::integer(0));
         t.add_column("plushy_sharks_owned", types::boolean());
     });
 
@@ -45,7 +45,7 @@ fn basic_fields() {
 //     let mut m = Migration::new();
 //     m.create_table("users", |t: &mut Table| {
 //         t.add_column("name", types::varchar(255));
-//         t.add_column("age", types::integer());
+//         t.add_column("age", types::integer(0));
 //         t.add_column("plushy_sharks_owned", types::boolean()); // nobody is allowed plushy sharks
 //     });
 
@@ -61,7 +61,7 @@ fn basic_fields_nullable() {
     m.create_table("users", |t: &mut Table| {
         t.add_column("id", types::primary());
         t.add_column("name", types::varchar(255).nullable(true));
-        t.add_column("age", types::integer().nullable(true));
+        t.add_column("age", types::integer(0).nullable(true));
         t.add_column("plushy_sharks_owned", types::boolean().nullable(true));
     });
 

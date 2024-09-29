@@ -235,7 +235,10 @@ impl MsSql {
             Char(l) => format!("CHAR({})", l),
             /* "NOT NULL" is added here because normally primary keys are implicitly not-null */
             Primary => format!("INT IDENTITY(1,1) PRIMARY KEY NOT NULL"),
-            Integer => format!("INT"),
+            Integer(l) => match l {
+                0 => format!("INT"),
+                _ => format!("INT({})", l),
+            },
             Serial => format!("INT IDENTITY(1,1)"),
             Float => format!("FLOAT(24)"),
             Double => format!("FLOAT(53)"),

@@ -21,7 +21,7 @@ fn varchar() {
 
 #[test]
 fn integer() {
-    let sql = MySql::add_column(true, None, "Integer", &types::integer());
+    let sql = MySql::add_column(true, None, "Integer", &types::integer(0));
     assert_eq!(String::from("ADD COLUMN `Integer` INTEGER NOT NULL"), sql);
 }
 
