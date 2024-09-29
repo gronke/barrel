@@ -57,9 +57,9 @@ fn date() {
 
 #[test]
 fn foreign() {
-    let sql = MySql::add_column(true, None, "Foreign", &types::foreign("posts", "id"));
+    let sql = MySql::add_column(true, None, "Foreign", &types::foreign("posts", "id", types::ReferentialAction::NoAction, types::ReferentialAction::NoAction));
     assert_eq!(
-        String::from("ADD COLUMN `Foreign` INTEGER REFERENCES posts(id) NOT NULL"),
+        String::from("ADD COLUMN `Foreign` INTEGER NOT NULL REFERENCES `posts`(id) ON UPDATE NO ACTION ON DELETE NO ACTION"),
         sql
     );
 }

@@ -9,12 +9,12 @@ fn in_schema() {
         false,
         Some("schema"),
         "author",
-        &types::foreign("users", "id"),
+        &types::foreign("users", "id", types::ReferentialAction::NoAction, types::ReferentialAction::NoAction),
     );
 
     assert_eq!(
         sql,
-        "\"author\" INTEGER REFERENCES \"schema\".\"users\"(id) NOT NULL"
+        "\"author\" INTEGER NOT NULL REFERENCES \"schema\".\"users\"(id) ON UPDATE NO ACTION ON DELETE NO ACTION"
     );
 }
 
@@ -24,11 +24,11 @@ fn ext_schema() {
         false,
         Some("schema"),
         "author",
-        &types::foreign_schema("other_schema", "users", "id"),
+        &types::foreign_schema("other_schema", "users", "id", types::ReferentialAction::NoAction, types::ReferentialAction::NoAction),
     );
 
     assert_eq!(
         sql,
-        "\"author\" INTEGER REFERENCES \"other_schema\".\"users\"(id) NOT NULL"
+        "\"author\" INTEGER NOT NULL REFERENCES \"other_schema\".\"users\"(id) ON UPDATE NO ACTION ON DELETE NO ACTION"
     );
 }

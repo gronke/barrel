@@ -54,9 +54,18 @@ fn date() {
 
 #[test]
 fn foreign() {
-    let sql = MsSql::add_column(true, None, "Foreign", &types::foreign("posts", "id"));
+    let sql = MsSql::add_column(true, None, "Foreign", &types::foreign("posts", "id", types::ReferentialAction::Unset, types::ReferentialAction::Unset));
     assert_eq!(
         String::from("ADD [Foreign] INT REFERENCES [posts]([id]) NOT NULL"),
+        sql
+    );
+}
+
+#[test]
+fn foreign_with_referential_action() {
+    let sql = MsSql::add_column(true, None, "Foreign", &types::foreign("posts", "id", types::ReferentialAction::Cascade, types::ReferentialAction::NoAction));
+    assert_eq!(
+        String::from("ADD [Foreign] INT REFERENCES [posts]([id]) ON UPDATE CASCADE ON DELETE NO ACTION NOT NULL"),
         sql
     );
 }

@@ -80,7 +80,7 @@ impl SqlGenerator for MySql {
                 Time => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 DateTime => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Binary => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
-                Foreign(_, _, _, _, _) => format!("{}{} INTEGER{}, FOREIGN KEY ({}) {}", Self::prefix(ex), name, nullable_definition, name, Self::print_type(bt, schema)),
+                Foreign(s, t, refs, u, d) => format!("{}{} INTEGER{} REFERENCES {}`{}`({}) ON UPDATE {} ON DELETE {}", Self::prefix(ex), name, nullable_definition, prefix!(s.or(schema.map(|s| s.into()))), t, refs.0.join(","), u, d),
                 Custom(_) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Array(it) => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(Array(Box::new(*it)), schema)),
                 Index(_) => unreachable!("Indices are handled via custom builder"),
