@@ -34,6 +34,7 @@ default = []
 diesel = ["tempfile", "diesel_rs"]
 sqlite3 = []
 mysql = []
+mariadb = ["mysql"]
 mssql = []
 pg = []
 

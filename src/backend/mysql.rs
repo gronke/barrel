@@ -73,6 +73,9 @@ impl SqlGenerator for MySql {
                 Serial => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Float => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Double => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                #[cfg(feature = "mariadb")]
+                UUID => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
+                #[cfg(not(feature = "mariadb"))]
                 UUID => unimplemented!(),
                 Json => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
                 Boolean => format!("{}{} {}", Self::prefix(ex), name, Self::print_type(bt, schema)),
@@ -231,6 +234,9 @@ impl MySql {
             Serial => format!("INTEGER AUTO_INCREMENT"),
             Float => format!("FLOAT"),
             Double => format!("DOUBLE"),
+            #[cfg(feature = "mariadb")]
+            UUID => format!("UUID"),
+            #[cfg(not(feature = "mariadb"))]
             UUID => format!("CHAR(36)"),
             Boolean => format!("BOOLEAN"),
             Date => format!("DATE"),
